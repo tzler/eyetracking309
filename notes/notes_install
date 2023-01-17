@@ -1,0 +1,65 @@
+# installation setup steps 
+
+# created psychopy environment from environment.yml 
+$ conda env create -f ~/gru/psychopy_experiments/prc-relevant_eyetracking/environment.yml 
+
+# activated environment 
+$ conda activate psychopy 
+
+# moved over pylink functions into psychopy folder--which i think akshay installed with the developers kit
+$ cp -rf /Applications/Eyelink/SampleExperiments/Python ~/gru/psychopy_experiments/eyelink_integration/
+
+# installed pylink in psycopy environment 
+$ python ~/gru/psychopy_experiments/install_pylink.py
+
+# turning on the eye tracker (circular button!) and the eyelink PC, they running a simple demo experiment 
+$ python ~/gru/psychopy_experiments/eyelink_integration/examples/Psychopy_examples/picture/picture.py
+
+# NOTES ON KEYBOARD INTERFACE ON THE PARTICIPANT SIDE
+# ENTER: turns on the video of the eyetracker
+# LEFT/RIGHT: toggles which viewof the eye you have while in camera mode 
+# c: calibrates eyetracker
+# v: validates calibration
+# o: starts the experiment
+# after calibration, in order to start the experiment, you have to go back into the camera mode before pressing 'o' 
+# to present any of the experiments on the correct monitor use screen=1 e.g.  
+# window = psychopy.window(.... screen=1) 
+#### i THINK that the link_events.py script is going to have everything we need to stream data from the eyelink to the bowman in real time
+
+
+## misc
+
+EYELINK
+- nice tutorial: https://www.youtube.com/watch?v=1tLJHVktrEk
+
+
+GET REALTIME GAZE INFORMATION! 
+
+i.e. let's avoid using the edf file at all :) 
+
+/Users/gru/psychopy/eyelink_base_functions/examples/Psychopy_examples/GC_window/GC_window.py
+
+```
+
+622         # grab the newest sample
+623         dt = el_tracker.getNewestSample()
+624         if dt is None:  # no sample data
+625             gaze_pos = (-32768, -32768)
+626         else:
+627             if eye_used == 1 and dt.isRightSample():
+628                 print('IS RIGHT')
+629                 gaze_pos = dt.getRightEye().getGaze()
+630             elif eye_used == 0 and dt.isLeftSample():
+631                 gaze_pos = dt.getLeftEye().getGaze()
+632 
+633             # update the window position and redraw the screen
+634             gaze_window.pos = (int(gaze_pos[0]-scn_width/2.0),
+635                                int(scn_height/2.0-gaze_pos[1]))
+
+```
+
+https://download.sr-support.com/dispdoc/page9.html
+
+
+
+
