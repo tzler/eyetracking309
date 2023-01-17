@@ -768,7 +768,7 @@ if __name__ == '__main__':
         # absolute path to images, which should be in this directory
         #'image_directory': os.path.join(os.getcwd(),'../stimuli/barense_2007/'),  
         # backwards mask over image 
-        'use_mask': True, 
+        'use_mask': False, 
         # time to mask in seconds 
         'masktime': .01,
         # feedback after each trial
@@ -795,6 +795,7 @@ if __name__ == '__main__':
         'shift_xy': 10, # amount to shift in degrees of visual angle
  
         'experiment_length': 50,
+        'block_length': 5, 
         'results_folder': '/Users/gru/psychopy/309_eyetracking_experiment/results/',  
 
 }
@@ -810,7 +811,6 @@ if __name__ == '__main__':
     i_trial = 0 
     run_experiment = True
     n_practice_trials = 5
-    block_length = 5
     between_block_message = "Take a moment to rest and re-adjust your posture, then we'll re-calibrate and start again"
     
     if sum(['load_subject' in i for i in sys.argv]) : 
@@ -833,12 +833,20 @@ if __name__ == '__main__':
         print('\n\n\n-----CREATING NEW SUBJECT', subject_id) 
     
     if sum(['experiment_length' in i for i in sys.argv]) : 
-        experiment_length = [i[i.find('=')+1:] for i in sys.argv if 'length' in i][0]
+        experiment_length = [int(i[i.find('=')+1:]) for i in sys.argv if 'experiment_length' in i][0]
     else: 
         experiment_length = params['experiment_length'] 
 
-    print('\n\n\n-----BEGINNING WITH PHASE: ', phase ) 
-    print('\n\n\n-----EXPERIMENT LENGTH: ', experiment_length, 'MINUTES','\n\n\n' ) 
+    if sum(['block_length' in i for i in sys.argv]) : 
+        block_length = [int(i[i.find('=')+1:]) for i in sys.argv if 'block_length' in i][0]
+    else: 
+        block_length = params['block_length'] 
+
+
+    print('\n\n-----BEGINNING WITH PHASE: ', phase ) 
+    print('\n\n-----EXPERIMENT LENGTH: ', experiment_length, 'MINUTES' ) 
+    print('\n\n-----BLOCK LENGTH: ', block_length, 'MINUTES', '\n\n\n' ) 
+
 
     # determine how sample images will be ordered
     images = image_order_protocol(params) 
@@ -857,9 +865,11 @@ if __name__ == '__main__':
         experiment_data = experiment_data.append(trial_data, ignore_index=True) 
         # for each trial, save cumulative data collected within experiment 
         experiment_data.to_csv(os.path.join(params['results_folder'], '%s.csv'%subject_id))  
+        
         # print to terminal 
         if params['verbose']: print('...data saved for %s'%subject_id)
-        
+        print( '---------- EXPERIMENT DATA SHAPE', experiment_data.shape) 
+
         if (phase == 'practice') * (i_trial == n_practice_trials): 
             
             eyelink_functions.show_msg(params, experiment_window, genv, between_block_message)
