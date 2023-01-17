@@ -827,6 +827,7 @@ if __name__ == '__main__':
         
         # generate a subject id we can use to save data from this experiment
         subject_id = generate_subject_id(params['results_folder']) 
+        subject_id + '.csv'
         # create dataframe for all trials in experiment 
         experiment_data = pandas.DataFrame({}) 
         phase = 'practice' 
@@ -842,11 +843,9 @@ if __name__ == '__main__':
     else: 
         block_length = params['block_length'] 
 
-
     print('\n\n-----BEGINNING WITH PHASE: ', phase ) 
     print('\n\n-----EXPERIMENT LENGTH: ', experiment_length, 'MINUTES' ) 
     print('\n\n-----BLOCK LENGTH: ', block_length, 'MINUTES', '\n\n\n' ) 
-
 
     # determine how sample images will be ordered
     images = image_order_protocol(params) 
@@ -864,7 +863,7 @@ if __name__ == '__main__':
         # aggregate data across trials 
         experiment_data = experiment_data.append(trial_data, ignore_index=True) 
         # for each trial, save cumulative data collected within experiment 
-        experiment_data.to_csv(os.path.join(params['results_folder'], '%s.csv'%subject_id))  
+        experiment_data.to_csv(os.path.join(params['results_folder'], subject_id))  
         
         # print to terminal 
         if params['verbose']: print('...data saved for %s'%subject_id)
